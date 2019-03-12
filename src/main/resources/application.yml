@@ -1,0 +1,44 @@
+spring:
+    application:
+        name: grpc-demo
+    jpa:
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        database: MYSQL
+        show-sql: false
+        open-in-view: false
+        hibernate: # none 不执行操作，update 自动创建，更新
+            ddl-auto: update
+            naming:
+                physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+                implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        properties:
+            hibernate.id.new_generator_mappings: true
+            hibernate.cache.use_second_level_cache: false
+            hibernate.cache.use_query_cache: false
+            hibernate.generate_statistics: true
+    datasource:
+        url: jdbc:mysql://localhost:3306/grpc_java?useUnicode=true&characterEncoding=utf8&useSSL=false
+        username: root
+        password: admin
+        hikari:
+          driver-class-name:  com.mysql.cj.jdbc.Driver
+
+server:
+    port: 8080
+
+# grpc
+grpc:
+    server:
+        address: 0.0.0.0
+        port: 10081
+# logging
+logging:
+    level:
+        io.stayhungrystayfoolish.github.grpcjava: debug
+
+
+
+
+
+
+

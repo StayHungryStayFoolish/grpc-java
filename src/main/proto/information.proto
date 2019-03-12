@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+option java_package = "io.stayhungrystayfoolish.github.grpcjava.grpc";
+option go_package = "io.stayhungrystayfoolish.github.grpcgo";
+
+service DictionaryService {
+    rpc selectorDictionary(DictionaryRequest) returns (DictionaryResponse) {};
+    rpc selectorDictionaryPage(DictionaryPageRequest) returns (DictionaryPageResponse) {};
+}
+
+service ArticleService {
+    rpc articleDetails (ArticleRequest) returns (Article) {};
+}
+
+message DictionaryRequest {
+    string parent = 1;
+    string language = 2;
+}
+
+message DictionaryResponse {
+    repeated Dictionary dictionary = 1;
+}
+
+message DictionaryPageRequest {
+    string parent = 1;
+    string language = 2;
+    PageRequest page = 3;
+}
+
+message DictionaryPageResponse {
+    map<string,DictionaryResponse> content = 1;
+    bool first = 2;
+    bool last = 3;
+    int32 total_elements = 4;
+    int32 total_pages = 5;
+}
+
+message ArticleRequest {
+    string dict_name = 1;
+    string language = 2;
+}
+
+message Dictionary {
+    int64 id = 1;
+    string parent = 2;
+    string name = 3;
+    string language = 4;
+    bool display = 5;
+    string icon = 6;
+    string url = 7;
+    string links = 8;
+    int32 ordinal = 9;
+    string status = 10;
+    string extension = 11;
+    string description = 12;
+    string created_by = 13;
+    string created_date = 14;
+    string last_modified_by = 15;
+    string last_modified_date = 16;
+}
+
+message Article {
+    int64 id = 1;
+    int64 dict_id = 2;
+    string unique_id = 3;
+    string title = 4;
+    string text = 5;
+    string language = 6;
+    bool display = 7;
+    string icon = 8;
+    string thumbnail = 9;
+    string tag = 10;
+    int32 ordinal = 11;
+    string status = 12;
+    string extension = 13;
+    string description = 14;
+    string created_by = 15;
+    string created_date = 16;
+    string last_modified_by = 17;
+    string last_modified_date = 18;
+}
+
+message PageRequest {
+    int32 pageNumber = 1;
+    int32 pageSize = 2;
+    string sort = 3;
+}
+

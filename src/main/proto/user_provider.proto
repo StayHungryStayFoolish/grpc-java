@@ -1,0 +1,26 @@
+// proto version
+syntax = "proto3";
+
+// set package
+option java_package = "io.stayhungrystayfoolish.github.grpcjava.grpc";
+
+service UserProvider {
+    rpc getByUserId(UserIdRequest) returns (UserVoReplay) {};
+}
+
+// request
+message UserIdRequest {
+    uint64 id = 1;
+}
+
+// response
+message UserVoReplay {
+    uint64 id = 1;
+    string name = 2;
+    string email = 3;
+}
+
+
+
+
+
