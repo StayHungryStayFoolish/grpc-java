@@ -1,8 +1,6 @@
 package io.stayhungrystayfoolish.github.grpcjava.domain;
 
 import io.stayhungrystayfoolish.github.grpcjava.grpc.UserProviderOuterClass;
-import io.stayhungrystayfoolish.github.grpcjava.service.UserService;
-import io.stayhungrystayfoolish.github.grpcjava.web.grpc.UserProvider;
 import net.badata.protobuf.converter.annotation.ProtoClass;
 import net.badata.protobuf.converter.annotation.ProtoField;
 
