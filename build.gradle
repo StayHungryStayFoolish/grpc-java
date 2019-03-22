@@ -1,0 +1,184 @@
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "http://repo.spring.io/plugins-release" }
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${spring_boot_version}"
+//        classpath "io.spring.gradle:propdeps-plugin:0.0.10.RELEASE"
+//        classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.2"
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
+    }
+}
+
+plugins {
+//    id "org.sonarqube" version "2.6.2"
+//    id "net.ltgt.apt-eclipse" version "0.19"
+    id "net.ltgt.apt-idea" version "0.19"
+    id "net.ltgt.apt" version "0.19"
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+    id "com.moowork.node" version "1.2.0"
+//    id 'org.liquibase.gradle' version '2.0.1'
+    id "com.google.protobuf" version "0.8.8"
+}
+
+apply plugin: 'java'
+//sourceCompatibility = 1.8
+//targetCompatibility = 1.8
+//assert System.properties['java.specification.version'] == '1.8'
+
+apply plugin: 'maven'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'war'
+//apply plugin: 'io.spring.dependency-management'
+apply plugin: 'idea'
+
+//defaultTasks 'bootRun'
+
+description = ''
+
+
+war {
+    webAppDirName = 'build/www/'
+    enabled = true
+    classifier = 'original'
+}
+
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.2.0"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.4.0'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
+
+configurations {
+    providedRuntime
+    compile.exclude module: "spring-boot-starter-tomcat"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+    maven {
+        url = 'https://jitpack.io'
+    }
+    maven {
+        url = 'http://repo.maven.apache.org/maven2'
+    }
+}
+
+sourceSets {
+    main {
+        proto {
+            // In addition to the default 'src/main/proto'
+            srcDir 'src/main/protobuf'
+            srcDir 'src/main/protocolbuffers'
+            // In addition to the default '**/*.proto' (use with caution).
+            // Using an extension other than 'proto' is NOT recommended,
+            // because when proto files are published along with class files, we can
+            // only tell the type of a file from its extension.
+            include '**/*.protodevel'
+        }
+        java {
+
+        }
+    }
+    test {
+        proto {
+            // In addition to the default 'src/test/proto'
+            srcDir 'src/test/protocolbuffers'
+        }
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    // Use undertow container start application
+    implementation "org.springframework.boot:spring-boot-starter-undertow"
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
+
+    compile "mysql:mysql-connector-java"
+//    implementation 'org.liquibase:liquibase-core'
+    implementation 'org.hibernate:hibernate-core'
+    implementation 'org.hibernate:hibernate-entitymanager'
+    implementation 'org.hibernate:hibernate-envers'
+    implementation "org.hibernate:hibernate-jcache"
+    implementation "org.hibernate.validator:hibernate-validator"
+    implementation "com.zaxxer:HikariCP"
+
+
+    implementation "org.mapstruct:mapstruct-jdk8:${mapstruct_version}"
+    implementation "org.projectlombok:lombok:${lombok_version}"
+    implementation "org.apache.commons:commons-lang3"
+
+    // Exception Plugin
+    implementation "org.zalando:problem-spring-web:0.24.0-RC.0"
+
+    implementation "org.springframework.security:spring-security-config"
+    implementation "org.springframework.security:spring-security-data"
+    implementation "org.springframework.security:spring-security-web"
+
+    // proto
+    implementation 'net.devh:grpc-server-spring-boot-starter:2.0.1.RELEASE'
+    implementation "io.protostuff:protostuff-core:${protostuff_version}"
+    implementation "io.protostuff:protostuff-runtime:${protostuff_version}"
+    implementation "com.github.BAData:protobuf-converter:${protobuf_converter_version}"
+
+    compileOnly "io.grpc:grpc-netty:${grpc_version}"
+    compileOnly "io.grpc:grpc-protobuf:${grpc_version}"
+    compileOnly "io.grpc:grpc-core:${grpc_version}"
+    compileOnly "io.grpc:grpc-stub:${grpc_version}"
+
+//    liquibaseRuntime "mysql:mysql-connector-java"
+//    liquibaseRuntime "org.liquibase:liquibase-core"
+//    liquibaseRuntime "org.liquibase.ext:liquibase-hibernate5:${liquibase_hibernate5_version}"
+//    liquibaseRuntime sourceSets.main.compileClasspath
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
+    annotationProcessor "org.hibernate:hibernate-jpamodelgen"
+
+
+    testCompile ("org.springframework.boot:spring-boot-starter-test") {
+        exclude group: 'com.vaadin.external.google', module: 'android-json'
+    }
+    testCompile "org.springframework.boot:spring-boot-test"
+    testCompile "junit:junit"
+}
+
+//tasks.withType(JavaCompile) {
+//    options.encoding = "UTF-8"
+//}
+//
+//task cleanResources(type: Delete) {
+//    delete 'build/resources'
+//}
+
+//wrapper {
+//    gradleVersion = '5.2.1'
+//}
+
+//task stage(dependsOn: 'bootWar') {
+//}
+
+//bootWar.dependsOn war
+//compileJava.dependsOn processResources
+//processResources.dependsOn cleanResources, bootBuildInfo
+//bootBuildInfo.mustRunAfter cleanResources
